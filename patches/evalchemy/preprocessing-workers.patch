@@ -1,0 +1,27 @@
+--- a/eval/chat_benchmarks/LiveCodeBenchv5/eval_instruct.py
++++ b/eval/chat_benchmarks/LiveCodeBenchv5/eval_instruct.py
+@@ -46,6 +46,7 @@
+     def __init__(
+         self,
+         dataset_name: str = "mlfoundations-dev/LCBv5-v2",
++        num_proc: Optional[int] = None,
+         debug: bool = False,
+         seed: List[int] = [0, 1234, 1234, 1234],
+         max_tokens: int = 32768,
+@@ -63,6 +64,7 @@
+         """
+         super().__init__(logger=logger, system_instruction=system_instruction)
+         self.dataset_name = dataset_name
++        self.num_proc = num_proc
+         self.debug = debug
+         self.max_new_tokens = max_tokens
+         self.seed = seed
+@@ -347,7 +349,7 @@
+     def load_questions(self) -> Dataset:
+         """Load LiveCodeBenchV5 questions from source."""
+         self.logger.info("Loading LiveCodeBenchV5 questions from source and converting to dataset...")
+-        cpu_count = os.cpu_count()
++        cpu_count = self.num_proc or os.cpu_count()
+         ds = load_dataset(self.dataset_name, split="test", trust_remote_code=True, cache_dir=HF_HUB_CACHE)
+         # Avoids "pyarrow.lib.ArrowInvalid: offset overflow while concatenating arrays" when mapping
+         processed_shards = []

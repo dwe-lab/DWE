@@ -1,0 +1,56 @@
+# Adapted from OPD² Qwen3-1.7B OPD recipe (revision in upstream.json).
+# This is full-distribution KL, not the upstream clipped policy objective.
+[models]
+student = "Qwen/Qwen3-1.7B"
+teacher = "Qwen/Qwen3-4B-Instruct-2507"
+
+[data]
+path = "bhheo/nvidia_open_reasoning_balanced_100k"
+revision = "6834794dad2a24c221ef8e35674193598c064e2b"
+split = "train"
+
+[data.adapter]
+column = "conversations"
+format = "sharegpt"
+user_turn = -1
+system_prompt = "You are a helpful assistant. Solve the problem carefully and provide a clear final answer."
+
+[estimator]
+pairs = 4
+chunk_size = 256
+
+[taopd]
+top_k = 16
+tail_epsilon = 0.000001
+
+[training]
+deepspeed = "configs/zero2.json"
+bf16 = true
+per_device_train_batch_size = 2
+gradient_accumulation_steps = 64 # 256 sequences/update on two workers
+max_steps = 100
+learning_rate = 0.000005
+lr_scheduler_type = "cosine_with_min_lr"
+lr_scheduler_kwargs = {min_lr_rate = 0.1}
+warmup_steps = 10
+gradient_checkpointing = true
+disable_dropout = true
+max_completion_length = 8192
+temperature = 0.7
+beta = 1.0 # TRL full-distribution reverse KL; not a reference-policy KL penalty
+seed = 42
+logging_steps = 1
+logging_first_step = true
+save_strategy = "steps"
+save_steps = 50
+save_only_model = false
+report_to = "none"
+use_vllm = true
+vllm_mode = "colocate"
+vllm_enable_sleep_mode = true
+vllm_gpu_memory_utilization = 0.25
+vllm_tensor_parallel_size = 1
+vllm_max_model_length = 12288
+chat_template_kwargs = {enable_thinking = false}
+model_init_kwargs = {dtype = "bfloat16", attn_implementation = "sdpa", revision = "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"}
+teacher_model_init_kwargs = {dtype = "bfloat16", attn_implementation = "sdpa", revision = "cdbee75f17c01a7cc42f958dc650907174af0554"}

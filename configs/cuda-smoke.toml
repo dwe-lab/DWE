@@ -1,0 +1,23 @@
+# Synthetic CUDA acceptance only; not a reported scientific experiment.
+[source]
+kind = "synthetic"
+positions = 32
+vocabulary = 4096
+hidden_size = 128
+teacher_perturbation = 0.15
+
+[loss]
+direction = "forward"
+temperature = 1.0
+chunk_size = 16
+pairs = 4
+
+[experiment]
+device = "cuda:0"
+dtype = "bfloat16"
+seed = 20260915
+train_head = true
+methods = ["exact", "liger", "coordinate", "independent", "quantile"]
+pair_budgets = [1, 4, 16]
+warmup = 2
+repeats = 5

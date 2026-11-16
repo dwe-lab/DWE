@@ -1,0 +1,68 @@
+--- a/evaluation/chat_benchmarks/SciBench/eval_instruct.py
++++ b/evaluation/chat_benchmarks/SciBench/eval_instruct.py
+@@ -96,7 +96,7 @@
+         examples = []
+         for ex in ds:
+             try:
+-                gold = float(ex["answer_number"])
++                gold = float(str(ex["answer_number"]).replace(",", "").replace("−", "-"))
+             except (TypeError, ValueError):
+                 continue
+             examples.append({
+--- a/evaluation/chat_benchmarks/CodeContests/eval_instruct.py
++++ b/evaluation/chat_benchmarks/CodeContests/eval_instruct.py
+@@ -13,8 +13,8 @@
+   1. Load `deepmind/code_contests` (test split by default).
+   2. Prompt the model to produce a Python solution.
+   3. Extract the last fenced ``` python block.
+-  4. Execute it against ALL `public_tests` (input / output pairs).
+-  5. Score per-problem as: pass_all = (all public test pass).
++  4. Execute it against all public, private, and generated tests.
++  5. Score per-problem as: pass_all = (all available tests pass).
+      Pass@1 is the mean of pass_all across problems.
+ 
+ Sandboxing here is INTENTIONALLY MINIMAL (subprocess + cpu/mem rlimit).
+@@ -98,13 +98,13 @@
+ 
+ 
+ class CodeContestsBenchmark(BaseBenchmark):
+-    """CodeContests, public-tests evaluation only (fast)."""
++    """CodeContests with all public, private, and generated tests."""
+ 
+     def __init__(
+         self,
+         dataset_name: str = "deepmind/code_contests",
+         split: str = "test",
+-        max_tests_per_problem: int = 5,
++        max_tests_per_problem: int = 0,
+         debug: bool = False,
+         max_tokens: int = 32768,
+         seed: List[int] = [0, 1234, 1234, 1234],
+@@ -124,16 +124,22 @@
+         ds = load_dataset(self.dataset_name, split=self.split)
+         out = []
+         for ex in ds:
+-            tests = ex.get("public_tests") or {}
+-            inputs = tests.get("input") or []
+-            outputs = tests.get("output") or []
++            inputs, outputs = [], []
++            for field in ("public_tests", "private_tests", "generated_tests"):
++                tests = ex.get(field) or {}
++                test_inputs = tests.get("input") or []
++                test_outputs = tests.get("output") or []
++                if len(test_inputs) != len(test_outputs):
++                    raise ValueError(f"Mismatched test inputs and outputs: {ex.get('name')}")
++                inputs.extend(test_inputs)
++                outputs.extend(test_outputs)
+             if not inputs or len(inputs) != len(outputs):
+                 continue
+             out.append({
+                 "name": ex.get("name", ""),
+                 "description": ex.get("description", ""),
+-                "public_inputs": inputs[: self.max_tests_per_problem],
+-                "public_outputs": outputs[: self.max_tests_per_problem],
++                "public_inputs": inputs[: self.max_tests_per_problem] if self.max_tests_per_problem > 0 else inputs,
++                "public_outputs": outputs[: self.max_tests_per_problem] if self.max_tests_per_problem > 0 else outputs,
+                 "difficulty": ex.get("difficulty"),
+             })
+         limit = int(os.environ.get("EVAL_DEBUG_LIMIT", "0") or "0")

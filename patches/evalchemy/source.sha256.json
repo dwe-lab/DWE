@@ -1,0 +1,14 @@
+{
+  "eval/chat_benchmarks/CodeForces/eval_instruct.py": {
+    "original": "a147e12cdc3c7ee0193cff4483ea8415df6280fb361934c1a97ff1cc6502c441",
+    "patched": "6e04dc61e79d6dfbf19cf86b4b321fcf73b9a3fe0e8ba5a32c82bae651ccae5f"
+  },
+  "eval/chat_benchmarks/LiveCodeBenchv5/eval_instruct.py": {
+    "original": "f19db51e2ae75980c4987b7252f8d6d5556fa8fd11e924f4e3ff910d415383cc",
+    "patched": "52e41e1e28e83827a29e2a876ddb4eff00ca112547215f716ac33b12a65c5d01"
+  },
+  "eval/chat_benchmarks/GPQADiamond/eval_instruct.py": {
+    "original": "7748ecd8cbbc14ce84fcdc541cf6dabbf15c2b26b3d9a9c7eac9ec1b4dd692fe",
+    "patched": "0ca51ec0dff12199b5d425e8f7930074954040c0b7410df7ce8596743b5c6e7a"
+  }
+}

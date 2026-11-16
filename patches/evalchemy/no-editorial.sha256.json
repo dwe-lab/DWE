@@ -1,0 +1,6 @@
+{
+  "eval/chat_benchmarks/CodeForces/eval_instruct.py": {
+    "original": "6e04dc61e79d6dfbf19cf86b4b321fcf73b9a3fe0e8ba5a32c82bae651ccae5f",
+    "patched": "e67bc378ca4ec3d655a6afd750120e66f0ea6a3bfae0a30dd4621597814399dc"
+  }
+}

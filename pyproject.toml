@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dwe"
+version = "0.1.0"
+description = "Stratified sparse backward computation for distillation"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12"
+dependencies = ["torch>=2.6,<3", "numpy>=1.26,<3"]
+
+[project.optional-dependencies]
+models = ["transformers>=5.2,<6", "datasets>=3,<5", "accelerate>=1.4,<2"]
+kd = [
+    "transformers==5.17.0", "datasets==4.8.5", "accelerate==1.15.0",
+    "bitsandbytes==0.50.2; sys_platform == 'linux'",
+]
+evaluation = ["lm-eval[hf]==0.4.13"]
+oracle = ["pot>=0.9,<1"]
+gpu = ["liger-kernel>=0.6,<1; sys_platform == 'linux'"]
+training = [
+    "trl==1.13.0",
+]
+runtime = [
+    "deepspeed==0.19.6 ; sys_platform == 'linux'",
+    "flash-linear-attention==0.5.2 ; sys_platform == 'linux'",
+    "vllm==0.28.0 ; sys_platform == 'linux'",
+]
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.11"]
+
+[project.scripts]
+dwe-benchmark = "dwe.benchmark:main"
+dwe-capture = "dwe.capture:main"
+dwe-train = "dwe.train:main"
+dwe-kd-cache = "dwe.kd.cache:main"
+dwe-kd-train = "dwe.kd.train:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dwe"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP"]

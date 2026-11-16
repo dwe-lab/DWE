@@ -1,0 +1,23 @@
+[source]
+kind = "synthetic"
+positions = 24
+vocabulary = 512
+hidden_size = 32
+teacher_perturbation = 0.15
+
+[loss]
+direction = "forward"
+temperature = 1.0
+chunk_size = 8
+pairs = 4
+
+[experiment]
+device = "cpu"
+dtype = "float32"
+seed = 20260915
+threads = 1
+train_head = true
+methods = ["exact", "coordinate", "independent", "quantile"]
+pair_budgets = [1, 4, 16]
+warmup = 1
+repeats = 8

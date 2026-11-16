@@ -1,0 +1,23 @@
+# GPU implementation check only; no scientific performance claim.
+[source]
+kind = "synthetic"
+positions = 32
+vocabulary = 4096
+hidden_size = 128
+teacher_perturbation = 0.15
+
+[loss]
+direction = "forward"
+temperature = 1.0
+chunk_size = 16
+pairs = 8
+
+[experiment]
+device = "cuda:0"
+dtype = "bfloat16"
+seed = 1337
+train_head = true
+methods = ["exact", "coordinate", "topk", "sketch", "quantile"]
+pair_budgets = [8]
+warmup = 3
+repeats = 10

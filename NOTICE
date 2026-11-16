@@ -1,0 +1,6 @@
+DWE — Distillation with Errors
+Copyright 2026 DWE contributors.
+
+This project uses third-party libraries and provides patches to upstream
+projects. Their respective licenses and notices continue to apply. Sources
+and pinned revisions are documented in upstream.json and patches/.

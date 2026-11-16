@@ -1,0 +1,42 @@
+# Controlled two-GPU updates, not the batch-256 end-to-end training workload.
+[protocol]
+warmup = 10
+repeats = 50
+positions = [1024, 4096, 8192] # global supervised completion tokens per update
+methods = ["upstream", "quantile", "taopd"]
+domains = ["math", "code", "science"]
+seed = 42
+
+[trajectories]
+examples_per_domain = 16
+max_tokens = 8192
+temperature = 0.7
+enable_thinking = false
+system_prompt = "You are a helpful assistant. Solve the problem carefully and provide a clear final answer."
+
+[estimator]
+pairs = 4
+chunk_size = 256
+
+[taopd]
+top_k = 16
+tail_epsilon = 0.000001
+
+[training]
+bf16 = true
+per_device_train_batch_size = 1
+gradient_accumulation_steps = 1
+learning_rate = 0.000005
+lr_scheduler_type = "constant"
+gradient_checkpointing = true
+disable_dropout = true
+max_completion_length = 8192
+temperature = 0.7
+beta = 1.0
+seed = 42
+save_strategy = "no"
+logging_strategy = "no"
+report_to = "none"
+use_vllm = false
+model_init_kwargs = {dtype = "bfloat16", attn_implementation = "sdpa"}
+teacher_model_init_kwargs = {dtype = "bfloat16", attn_implementation = "sdpa"}

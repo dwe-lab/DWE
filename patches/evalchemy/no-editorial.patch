@@ -1,0 +1,12 @@
+--- a/eval/chat_benchmarks/CodeForces/eval_instruct.py
++++ b/eval/chat_benchmarks/CodeForces/eval_instruct.py
+@@ -118,9 +118,6 @@
+             if problem["note"]:
+                 html_output += f"<h2>Note</h2>"
+                 html_output += f"<div>{problem['note']}</div>"
+-            if problem["editorial"]:
+-                html_output += f"<h2>Editorial</h2>"
+-                html_output += f"<div>{problem['editorial']}</div>"
+             html_output += "</body></html>"
+             return html_output
+ 

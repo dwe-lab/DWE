@@ -1,0 +1,56 @@
+{
+  "dependency_policy": "Released artifacts pinned by uv.lock; one source-verified TRL loss-hook patch, no vendored trainers.",
+  "components": [
+    {
+      "name": "PyTorch",
+      "url": "https://github.com/pytorch/pytorch",
+      "use": "Autograd, PCA, sampling, tensor operations and checkpointed exact control"
+    },
+    {
+      "name": "Transformers",
+      "url": "https://github.com/huggingface/transformers",
+      "use": "Model and tokenizer loading"
+    },
+    {
+      "name": "Datasets",
+      "url": "https://github.com/huggingface/datasets",
+      "use": "Dataset loading"
+    },
+    {
+      "name": "Liger-Kernel",
+      "url": "https://github.com/linkedin/Liger-Kernel",
+      "use": "Optimized chunked distillation control; H100 acceptance passed on the locked runtime"
+    },
+    {
+      "name": "POT",
+      "url": "https://github.com/PythonOT/POT",
+      "use": "Small-support exact transport oracle"
+    },
+    {
+      "name": "TRL",
+      "url": "https://github.com/huggingface/trl",
+      "version": "1.13.0",
+      "patch": "patches/trl/loss-hook.patch",
+      "use": "Full-distribution on-policy distillation, generation, distributed training, logging and checkpoints"
+    },
+    {
+      "name": "OPD2",
+      "url": "https://github.com/naver-ai/opd2",
+      "revision": "2dac53fbc80673677fb3bd1d8690392761ee3e52",
+      "use": "Public training data and math evaluation protocol; not its policy loss"
+    },
+    {
+      "name": "Evalchemy",
+      "url": "https://github.com/mlfoundations/evalchemy",
+      "revision": "ce5cea9",
+      "use": "OPD2 official evaluation image and task adapters"
+    },
+    {
+      "name": "TA-OPD",
+      "url": "https://github.com/HuipengHuang/TA-OPD",
+      "revision": "22876f3f6011cdfa5268af07a311b9ec4d3afdd4",
+      "paper": "https://arxiv.org/abs/2608.14728",
+      "use": "Equation 4 and Appendix D.2 baseline; independent PyTorch implementation checked against the official FSDP loss. Same TRL training protocol as other methods."
+    }
+  ]
+}

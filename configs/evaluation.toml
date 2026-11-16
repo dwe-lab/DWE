@@ -1,0 +1,84 @@
+# Full OPD² task coverage, one complete pass before adding repetitions.
+# Existing five-repeat math results remain valid and are reused.
+[model]
+dtype = "bfloat16"
+tensor_parallel_size = 1
+gpu_memory_utilization = 0.8
+max_model_len = 36864
+max_num_seqs = 32
+batch_size = "auto"
+enforce_eager = true
+language_model_only = true
+enable_thinking = false
+seed = 0
+
+[benchmark.AIME24]
+provider = "evalchemy"
+class = "AIME24Benchmark"
+kwargs = {data_file = "eval/chat_benchmarks/AIME24/data/aime24.json"}
+
+[benchmark.AIME25]
+provider = "evalchemy"
+class = "AIME25Benchmark"
+kwargs = {data_file = "eval/chat_benchmarks/AIME25/data/aime25.json"}
+
+[benchmark.AMC23]
+provider = "evalchemy"
+class = "AMC23Benchmark"
+kwargs = {data_file = "eval/chat_benchmarks/AMC23/data/amc23.json"}
+
+[benchmark.HMMT]
+dataset = true
+provider = "evalchemy"
+class = "HMMTBenchmark"
+artifact_format = "pickle"
+
+[benchmark.MATH500]
+provider = "opd2"
+class = "MATH500Benchmark"
+kwargs = {data_file = "eval/chat_benchmarks/MATH500/data/math500.jsonl"}
+
+[benchmark.OlympiadBench]
+dataset = true
+provider = "opd2"
+class = "OlympiadBenchBenchmark"
+
+[benchmark.RGMath]
+provider = "opd2"
+class = "RGMathBenchmark"
+
+[benchmark.GPQADiamond]
+dataset = true
+provider = "evalchemy"
+class = "GPQADiamondBenchmark"
+
+[benchmark.SuperGPQA]
+dataset = true
+provider = "opd2"
+class = "SuperGPQABenchmark"
+
+[benchmark.SciBench]
+dataset = true
+provider = "opd2"
+class = "SciBenchBenchmark"
+
+[benchmark.CodeContests]
+dataset = true
+provider = "opd2"
+class = "CodeContestsBenchmark"
+
+[benchmark.CodeForces]
+dataset = true
+provider = "evalchemy"
+class = "CodeForcesBenchmark"
+expected_questions = 453
+
+[benchmark.LiveCodeBenchv5]
+dataset = true
+provider = "evalchemy"
+class = "LiveCodeBenchV5Benchmark"
+kwargs = {num_proc = 4}
+
+[benchmark.RGAlgorithmic]
+provider = "opd2"
+class = "RGAlgorithmicBenchmark"

@@ -1,0 +1,21 @@
+# API bring-up example, not an established training/evaluation data protocol.
+[student]
+id = "Qwen/Qwen3-1.7B"
+revision = "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+
+[teacher]
+id = "Qwen/Qwen3-4B-Instruct-2507"
+revision = "cdbee75f17c01a7cc42f958dc650907174af0554"
+
+[data]
+path = "json"
+data_files = "data/smoke.jsonl"
+split = "train"
+text_field = "text"
+examples = 3
+
+[capture]
+device = "cuda:0"
+dtype = "bfloat16"
+max_length = 512
+positions = 128

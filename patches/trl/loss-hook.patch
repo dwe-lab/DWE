@@ -1,0 +1,20 @@
+--- a/trl/trainer/distillation_trainer.py
++++ b/trl/trainer/distillation_trainer.py
+@@ -1825,6 +1825,8 @@
+ 
+         return (loss, None) if return_outputs else loss
+ 
++    distribution_loss = staticmethod(_chunked_divergence_loss)
++
+     def _compute_loss(self, unwrapped_student, inputs, num_items_in_batch):
+         # Chunked JSD path: project the teacher/student hidden states to vocab logits one chunk at a time (never
+         # materializing the full `(B, C, V)` logits), so the teacher's dense distribution can be matched without
+@@ -1885,7 +1887,7 @@
+             teacher_logit_scale = getattr(teacher_config, "output_multiplier", None)
+         student_logit_scale = 1.0 if student_logit_scale is None else student_logit_scale
+         teacher_logit_scale = 1.0 if teacher_logit_scale is None else teacher_logit_scale
+-        loss, entropy_sum, n_valid = _chunked_divergence_loss(
++        loss, entropy_sum, n_valid = self.distribution_loss(
+             student_hidden_states,
+             teacher_hidden_states,
+             student_lm_head.weight,

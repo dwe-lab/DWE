@@ -1,0 +1,72 @@
+--- a/eval/chat_benchmarks/CodeForces/eval_instruct.py
++++ b/eval/chat_benchmarks/CodeForces/eval_instruct.py
+@@ -45,6 +45,7 @@
+ 
+     def __init__(
+         self,
++        dataset_name: str = "open-r1/codeforces",
+         debug: bool = False,
+         seed: List[int] = [0, 1234, 1234, 1234],
+         max_tokens: int = 32768,
+@@ -61,6 +62,7 @@
+             system_instruction: Optional system instruction for the model
+         """
+         super().__init__(logger=logger, system_instruction=system_instruction)
++        self.dataset_name = dataset_name
+         self.debug = debug
+         self.seed = seed
+         self.max_new_tokens = max_tokens
+@@ -377,6 +379,6 @@
+     def load_questions(self) -> Dataset:
+         """Load CodeForces questions from source."""
+         self.logger.info("Loading CodeForces questions from source and converting to dataset...")
+-        ds = load_dataset("open-r1/codeforces", cache_dir=HF_HUB_CACHE)["test"].to_list()
++        ds = load_dataset(self.dataset_name, cache_dir=HF_HUB_CACHE)["test"].to_list()
+         ds = [{**x, "difficulty": rating_to_difficulty(x["rating"])} for x in ds]
+         return ds
+--- a/eval/chat_benchmarks/LiveCodeBenchv5/eval_instruct.py
++++ b/eval/chat_benchmarks/LiveCodeBenchv5/eval_instruct.py
+@@ -45,6 +45,7 @@
+ 
+     def __init__(
+         self,
++        dataset_name: str = "mlfoundations-dev/LCBv5-v2",
+         debug: bool = False,
+         seed: List[int] = [0, 1234, 1234, 1234],
+         max_tokens: int = 32768,
+@@ -61,6 +62,7 @@
+             system_instruction: Optional system instruction for the model
+         """
+         super().__init__(logger=logger, system_instruction=system_instruction)
++        self.dataset_name = dataset_name
+         self.debug = debug
+         self.max_new_tokens = max_tokens
+         self.seed = seed
+@@ -346,7 +348,7 @@
+         """Load LiveCodeBenchV5 questions from source."""
+         self.logger.info("Loading LiveCodeBenchV5 questions from source and converting to dataset...")
+         cpu_count = os.cpu_count()
+-        ds = load_dataset("mlfoundations-dev/LCBv5-v2", split="test", trust_remote_code=True, cache_dir=HF_HUB_CACHE)
++        ds = load_dataset(self.dataset_name, split="test", trust_remote_code=True, cache_dir=HF_HUB_CACHE)
+         # Avoids "pyarrow.lib.ArrowInvalid: offset overflow while concatenating arrays" when mapping
+         processed_shards = []
+         num_shards = 4
+--- a/eval/chat_benchmarks/GPQADiamond/eval_instruct.py
++++ b/eval/chat_benchmarks/GPQADiamond/eval_instruct.py
+@@ -33,6 +33,7 @@
+ 
+     def __init__(
+         self,
++        dataset_name: str = "Idavidrein/gpqa",
+         debug: bool = False,
+         seed: List[int] = [0, 1234, 1234, 1234],
+         max_tokens: int = 32768,
+@@ -48,7 +49,7 @@
+             logger: Optional logger instance
+         """
+         super().__init__(logger=logger, system_instruction=system_instruction)
+-        self.dataset_name = "Idavidrein/gpqa"
++        self.dataset_name = dataset_name
+         self.debug = debug
+         self.seed = seed
+         self.max_new_tokens = max_tokens
