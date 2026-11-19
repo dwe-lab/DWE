@@ -61,11 +61,14 @@ class = "SuperGPQABenchmark"
 dataset = true
 provider = "opd2"
 class = "SciBenchBenchmark"
+expected_questions = 692
 
 [benchmark.CodeContests]
 dataset = true
 provider = "opd2"
 class = "CodeContestsBenchmark"
+expected_questions = 165
+kwargs = {max_tests_per_problem = 0}
 
 [benchmark.CodeForces]
 dataset = true

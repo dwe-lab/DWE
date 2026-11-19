@@ -42,7 +42,8 @@ The evaluation protocol includes distinctions that must remain visible in report
 - RGMath and RGAlgorithmic each use five upstream tasks with 20 examples each.
   The runner checks that no constituent task was silently omitted.
 - SciBench includes all 692 questions after normalizing thousands separators
-  and Unicode minus signs in numeric gold answers.
+  and Unicode minus signs in numeric gold answers. Preflight checks the loaded
+  count before the runner starts generation.
 - CodeContests uses all 165 test problems and all public, private, and generated
   tests. A problem is correct only when its solution passes every test.
 - LiveCodeBench is the pinned Evalchemy v5 adapter, not a rolling latest release.
@@ -64,5 +65,9 @@ configuration; the runner verifies generated coverage and records source and
 scored counts separately. After removing editorials, its longest prompt is 1,857 tokens, within the
 shared 36,864-token window and 32,768-token completion budget.
 
-Run the scoring container with the host user's UID/GID so that it can write
-results to the single mounted output directory without elevated capabilities.
+Run CodeForces scoring in the isolated Linux container with the host user's
+UID/GID. The evaluation runs used the container option
+`--ulimit nofile=65536:65536`. The runner uses a forkserver and closes worker
+processes and pipes after scoring. It uses Evalchemy's native tests and
+timeouts. Infrastructure errors fail the scoring command, and the saved
+generations can be scored again.

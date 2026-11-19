@@ -60,6 +60,8 @@ def main():
         questions = task.load_questions()
         if not len(questions):
             raise ValueError("Empty benchmark")
+        if args.task == "CodeContests" and any(not row["public_inputs"] for row in questions):
+            raise ValueError("CodeContests loaded empty test suites. Apply the pinned OPD² patch.")
         if hasattr(task, "TASK_NAMES"):
             present = {q["task_name"] for q in questions}
             if present != set(task.TASK_NAMES):
@@ -67,7 +69,16 @@ def main():
         # One generation pass; preserve data seeds before setting the generation seed.
         task.load_questions = lambda: questions
         loaded_count = len(questions)
-        count = config["benchmark"][args.task].get("expected_questions", loaded_count)
+        eligible_count = loaded_count
+        if args.task == "CodeForces" and task.filter_interaction_questions:
+            # The native adapter filters interactive problems during generation.
+            eligible_count = sum(not question["interaction_format"] for question in questions)
+        count = config["benchmark"][args.task].get("expected_questions", eligible_count)
+        if eligible_count != count:
+            raise ValueError(
+                f"{args.task}: found {eligible_count} eligible questions, expected {count}. "
+                "Check the pinned benchmark patches and dataset."
+            )
     else:
         count = saved["questions"]
         loaded_count = saved["loaded_questions"]
@@ -136,7 +147,12 @@ def main():
                 results = json.load(handle)
         if len(results["examples"]) != count:
             raise ValueError("Generation does not cover the recorded benchmark")
-        scored = task.evaluate_responses(results)
+        if args.task == "CodeForces":
+            from codeforces_scoring import score_codeforces
+
+            scored = score_codeforces(task, results)
+        else:
+            scored = task.evaluate_responses(results)
         if artifact_format == "pickle":
             with (args.output / f"result-{args.repeat:02d}.pkl").open("wb") as handle:
                 pickle.dump(scored, handle, protocol=pickle.HIGHEST_PROTOCOL)
